@@ -63,10 +63,15 @@ func getModules() ([]*modEntry, error) {
 		return nil, err
 	}
 
+	type goModReplace struct {
+		Path string
+		Version string
+	}
 	type goMod struct {
 		Path    string
 		Main    bool
 		Version string
+		Replace *goModReplace
 	}
 
 	var mods []goMod
@@ -80,6 +85,10 @@ func getModules() ([]*modEntry, error) {
 		}
 
 		if !mod.Main {
+			if mod.Replace != nil {
+				mod.Path = mod.Replace.Path
+				mod.Version = mod.Replace.Version
+			}
 			mods = append(mods, mod)
 		}
 	}
